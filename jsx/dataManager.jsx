@@ -1,5 +1,5 @@
 /*jslint vars: true , plusplus: true, devel: true, nomen: true, regexp: true, indent: 4, maxerr: 50 */
-/*global bm_eventDispatcher, bm_generalUtils, bm_downloadManager, bm_layerElement, File*/
+/*global bm_eventDispatcher, bm_generalUtils, bm_downloadManager, bm_layerElement, File, Elsewhere*/
 
 var bm_dataManager = (function () {
     'use strict';
@@ -189,7 +189,7 @@ var bm_dataManager = (function () {
         _destinationPath = destinationPath;
         deleteExtraParams(data, config);
         separateComps(data.layers, data.comps);
-        var dataFile, segmentPath, s, string;
+        var dataFile, segmentPath, s, string, testFile, moments, momentsString;
         if (config.segmented) {
             splitAnimation(data, config.segmentedTime);
             var i, len = animationSegments.length;
@@ -222,8 +222,13 @@ var bm_dataManager = (function () {
         dataFile = new File(destinationPath);
         dataFile.open('w', 'TEXT', '????');
         dataFile.encoding = 'UTF-8';
+        testFile = new File(destinationPath + '.hello.txt')
+        testFile.open('w', 'TEXT', '????');
+        testFile.encoding = 'UTF-8';
         string = JSON.stringify(data);
         string = string.replace(/\n/g, '');
+        moments = Elsewhere.extractMoments(data);
+        momentsString = JSON.stringify(moments)
         ////
         if (config.demo) {
             var demoStr = bm_downloadManager.getDemoData();
@@ -257,6 +262,8 @@ var bm_dataManager = (function () {
             dataFile.write(string); //DO NOT ERASE, JSON UNFORMATTED
             //dataFile.write(JSON.stringify(ob.renderData.exportData, null, '  ')); //DO NOT ERASE, JSON FORMATTED
             dataFile.close();
+            testFile.write(momentsString);
+            testFile.close();
         } catch (errr) {
             bm_eventDispatcher.sendEvent('bm:alert', {message: 'Could not write file.<br /> Make sure you have enabled scripts to write files. <br /> Edit > Preferences > General > Allow Scripts to Write Files and Access Network '});
         }

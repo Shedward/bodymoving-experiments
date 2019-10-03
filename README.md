@@ -9,3 +9,8 @@ CSXS.9 is for CC2019, if there is newer AfterEffect this key suffix may change.
 2. Add sourcess (or symbolic link to sources) into 
 
 `/Library/Application\ Support/Adobe/CEP/extensions/com.bodymovin.bodymovin`
+
+
+# Building ZXP 
+
+1. Download `ZXPSignCmd`
