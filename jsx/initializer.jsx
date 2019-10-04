@@ -2,7 +2,6 @@
 /*global $*/
 
 var extensionPath = $.fileName.split('/').slice(0, -1).join('/') + '/';
-$.evalFile(extensionPath + 'elsewhere.jsx');
 $.evalFile(extensionPath + 'JSON.jsx');
 $.evalFile(extensionPath + 'eventManager.jsx');
 $.evalFile(extensionPath + 'projectManager.jsx');
@@ -33,3 +32,6 @@ $.evalFile(extensionPath + 'utils/markerHelper.jsx');
 $.evalFile(extensionPath + 'utils/bez.jsx');
 $.evalFile(extensionPath + 'utils/transformation-matrix.jsx');
 $.evalFile(extensionPath + 'utils/PropertyFactory.jsx');
+$.evalFile(extensionPath + 'elsewhere/momentsExtractor.jsx');
+$.evalFile(extensionPath + 'elsewhere/metadataManager.jsx');
+$.evalFile(extensionPath + 'elsewhere/generalUtils.jsx');

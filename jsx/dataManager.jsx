@@ -1,5 +1,5 @@
 /*jslint vars: true , plusplus: true, devel: true, nomen: true, regexp: true, indent: 4, maxerr: 50 */
-/*global bm_eventDispatcher, bm_generalUtils, bm_downloadManager, bm_layerElement, File, Elsewhere*/
+/*global bm_eventDispatcher, bm_generalUtils, bm_downloadManager, bm_layerElement, File, ew_momentsExtractor*/
 
 var bm_dataManager = (function () {
     'use strict';
@@ -227,7 +227,7 @@ var bm_dataManager = (function () {
         testFile.encoding = 'UTF-8';
         string = JSON.stringify(data);
         string = string.replace(/\n/g, '');
-        moments = Elsewhere.extractMoments(data);
+        moments = ew_momentsExtractor.extractMoments(data);
         momentsString = JSON.stringify(moments)
         ////
         if (config.demo) {
