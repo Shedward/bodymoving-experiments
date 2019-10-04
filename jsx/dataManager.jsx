@@ -225,7 +225,7 @@ var bm_dataManager = (function () {
         ew_layerConverter.convertAnimation(data);
         string = JSON.stringify(data);
         string = string.replace(/\n/g, '');
-        momentsFile = new File(destinationPath + '.moments.json')
+        momentsFile = new File(destinationPath.replace('.json', '.moments.json'))
         momentsFile.open('w', 'TEXT', '????');
         momentsFile.encoding = 'UTF-8';
         moments = ew_momentsExtractor.extractMoments(data);

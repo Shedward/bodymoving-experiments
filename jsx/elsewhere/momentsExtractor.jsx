@@ -77,10 +77,7 @@ var ew_momentsExtractor = (function () {
             }), function (moment) {
                 return moment != undefined;
             });
-        return {
-            count: moments.length,
-            moments: moments
-        };
+        return moments;
     }
     
     var obj = {

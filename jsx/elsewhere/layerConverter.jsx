@@ -31,6 +31,12 @@ var ew_layerConverter = (function (){
         assets.push(asset(newAssetName, textSize[0], textSize[1]));
     }
     
+    function removeUnsuportedLayers(animation) {
+        animation.layers = ew_utils.filterArray(animation.layers, function (layer) {
+            return layer.ty == bm_layerElement.layerTypes.still;
+        });
+    }
+    
     function convertToImage(layer, assets) {
         switch (layer.ty) {
             case bm_layerElement.layerTypes.text:
@@ -45,11 +51,12 @@ var ew_layerConverter = (function (){
         ew_utils.forEachInArray(animation.layers, function (layer) {
             convertToImage(layer, animation.assets);
         });
+        
+        removeUnsuportedLayers(animation);
     }
     
     var obj = {
-        convertAnimation: convertAnimation,
-        convertLayerToImage: convertToImage
+        convertAnimation: convertAnimation
     };
     return obj;
 }());
