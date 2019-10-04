@@ -3,6 +3,8 @@
 /*global bm_eventDispatcher */
 
 var ew_utils = (function () {
+    'use strict';
+
     var enable_debug_logging = true;
     
     function log(msg) {
@@ -21,6 +23,25 @@ var ew_utils = (function () {
         for (var indx = 0; indx < arr.length; indx++) {
             action(arr[indx])
         }
+    }
+    
+    function filterArray(arr, test) {
+        var result = [];
+        for (var indx = 0; indx < arr.length; indx++) {
+            if (test(arr[indx])) {
+                result.push(arr[indx]);
+            }
+        }
+        return result;
+    }
+    
+    function mapArray(arr, transform) {
+        var result = [];
+        
+        for (var indx = 0; indx < arr.length; indx++) {
+            result.push(transform(arr[indx]));
+        }
+        return result;
     }
     
     function findInArray(arr, test) {
@@ -45,7 +66,7 @@ var ew_utils = (function () {
         
         var zipped = [];
         for (var indx = 0; indx < minSize; indx++) {
-            var zippedElem = arrs.map(function (e) { return e[indx]; });
+            var zippedElem = mapArray(arrs, function (e) { return e[indx]; });
             zipped.push(zippedElem);
         }
         
@@ -61,6 +82,8 @@ var ew_utils = (function () {
         showError: showError,
         zipArrays: zipArrays,
         forEachInArray: forEachInArray,
+        filterArray: filterArray,
+        mapArray: mapArray,
         findInArray: findInArray,
         stringStartsWith: stringStartsWith,
         log: log

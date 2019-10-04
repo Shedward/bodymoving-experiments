@@ -65,13 +65,16 @@ var ew_momentsExtractor = (function () {
     }
 
     function extractMoments(animation) {
-        var imageLayers = animation.layers.filter(function (layer) {
+        ew_utils.log(animation);
+        ew_utils.log(animation.layers.filter);
+        ew_utils.log(animation.layers);
+        ew_utils.log("Test");
+        var imageLayers = ew_utils.filterArray(animation.layers, function (layer) {
             return layer.ty == bm_layerElement.layerTypes.still;
         });
-        var moments = imageLayers
-            .map(function (layer) {
+        var moments = ew_utils.filterArray(ew_utils.mapArray(imageLayers, function (layer) {
                 return momentFromLayer(layer, animation.fr, animation.assets);
-            }).filter(function (moment) {
+            }), function (moment) {
                 return moment != undefined;
             });
         return {

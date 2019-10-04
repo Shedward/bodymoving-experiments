@@ -36,3 +36,4 @@ $.evalFile(extensionPath + 'elsewhere/momentsExtractor.jsx');
 $.evalFile(extensionPath + 'elsewhere/metadataManager.jsx');
 $.evalFile(extensionPath + 'elsewhere/generalUtils.jsx');
 $.evalFile(extensionPath + 'elsewhere/contentExtractor.jsx');
+$.evalFile(extensionPath + 'elsewhere/layerConverter.jsx');

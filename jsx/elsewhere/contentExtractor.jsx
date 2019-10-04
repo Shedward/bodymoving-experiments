@@ -3,6 +3,8 @@
 /*global ew_momentsExtractor, ew_utils, ew_metadataManager */
 
 var ew_contentExtractor = (function() {
+    'use strict';
+
     function isZeroPoint(point) {
         return point[0] == 0 && point[1] == 0;
     }
@@ -24,7 +26,7 @@ var ew_contentExtractor = (function() {
         }
         
         var groupedPoints  = ew_utils.zipArrays([ bmPath.v, bmPath.i, bmPath.o ]);
-        var points = groupedPoints.map(function (pointData) {
+        var points = ew_utils.mapArray(groupedPoints, function (pointData) {
             return {
                 p: pointFromArray(pointData[0]),
                 'in': pointFromArray(pointData[1]),

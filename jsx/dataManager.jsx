@@ -189,7 +189,7 @@ var bm_dataManager = (function () {
         _destinationPath = destinationPath;
         deleteExtraParams(data, config);
         separateComps(data.layers, data.comps);
-        var dataFile, segmentPath, s, string, testFile, moments, momentsString;
+        var dataFile, segmentPath, s, string, momentsFile, moments, momentsString;
         if (config.segmented) {
             splitAnimation(data, config.segmentedTime);
             var i, len = animationSegments.length;
@@ -222,11 +222,12 @@ var bm_dataManager = (function () {
         dataFile = new File(destinationPath);
         dataFile.open('w', 'TEXT', '????');
         dataFile.encoding = 'UTF-8';
-        testFile = new File(destinationPath + '.hello.txt')
-        testFile.open('w', 'TEXT', '????');
-        testFile.encoding = 'UTF-8';
+        ew_layerConverter.convertAnimation(data);
         string = JSON.stringify(data);
         string = string.replace(/\n/g, '');
+        momentsFile = new File(destinationPath + '.moments.json')
+        momentsFile.open('w', 'TEXT', '????');
+        momentsFile.encoding = 'UTF-8';
         moments = ew_momentsExtractor.extractMoments(data);
         momentsString = JSON.stringify(moments)
         ////
@@ -262,8 +263,8 @@ var bm_dataManager = (function () {
             dataFile.write(string); //DO NOT ERASE, JSON UNFORMATTED
             //dataFile.write(JSON.stringify(ob.renderData.exportData, null, '  ')); //DO NOT ERASE, JSON FORMATTED
             dataFile.close();
-            testFile.write(momentsString);
-            testFile.close();
+            momentsFile.write(momentsString);
+            momentsFile.close();
         } catch (errr) {
             bm_eventDispatcher.sendEvent('bm:alert', {message: 'Could not write file.<br /> Make sure you have enabled scripts to write files. <br /> Edit > Preferences > General > Allow Scripts to Write Files and Access Network '});
         }
