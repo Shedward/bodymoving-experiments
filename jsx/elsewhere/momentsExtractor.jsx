@@ -38,28 +38,34 @@ var ew_momentsExtractor = (function () {
         
         return contentType.unknown;
     }
+    
+    function contentValueForLayer(layer) {
+        return undefined;
+    }
 
     function momentFromLayer(layer, framerate, assets) {
-        ew_utils.log("Started extracting moment from layer " + layer.nm + " with " + assets.length + " assets.");
+        ew_utils.log("Started extracting moment from layer " + layer.nm);
         var asset = ew_utils.findInArray(assets, function(asset) { 
-            ew_utils.log("Checking asset " + asset.id);
             return asset.id == layer.refId 
         });
-        ew_utils.log("Found asset " + asset.id + " with id " + layer.refId);
         if (!asset) {
             return null;
         }
         
+        var startTime = layer.ip / framerate;
         var contentType = contentTypeForImageLayer(layer);
-        ew_utils.log("Detected content type " + contentType);
-        
-        var moment = {
+
+        return {
             layerName: layer.nm,
+            position: startTime,
             assetName: asset.p,
-            contentType: contentType
+            assetSize: {
+                width: asset.w,
+                height: asset.h
+            },
+            contentType: contentType,
+            contentValue: contentValueForLayer(layer)
         };
-        ew_utils.log("Extracted " + JSON.stringify(moment));
-        return moment;
     }
 
     function extractMoments(animation) {
