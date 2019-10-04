@@ -1,7 +1,7 @@
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, regexp: true, indent: 4, maxerr: 50 */
 /*global bm_layerElement */
 /*exported ew_momentsExtractor */
-/*global ew_metadataManager, ew_utils */
+/*global ew_metadataManager, ew_utils, ew_contentExtractor */
 
 var ew_momentsExtractor = (function () {
     'use strict';
@@ -38,10 +38,6 @@ var ew_momentsExtractor = (function () {
         
         return contentType.unknown;
     }
-    
-    function contentValueForLayer(layer) {
-        return undefined;
-    }
 
     function momentFromLayer(layer, framerate, assets) {
         ew_utils.log("Started extracting moment from layer " + layer.nm);
@@ -49,7 +45,7 @@ var ew_momentsExtractor = (function () {
             return asset.id == layer.refId 
         });
         if (!asset) {
-            return null;
+            return undefined;
         }
         
         var startTime = layer.ip / framerate;
@@ -64,7 +60,7 @@ var ew_momentsExtractor = (function () {
                 height: asset.h
             },
             contentType: contentType,
-            contentValue: contentValueForLayer(layer)
+            contentValue: ew_contentExtractor.extractContentFromLayer(layer, contentType)
         };
     }
 
@@ -76,7 +72,7 @@ var ew_momentsExtractor = (function () {
             .map(function (layer) {
                 return momentFromLayer(layer, animation.fr, animation.assets);
             }).filter(function (moment) {
-                return moment != null;
+                return moment != undefined;
             });
         return {
             count: moments.length,
