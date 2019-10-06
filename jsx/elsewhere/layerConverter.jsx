@@ -16,6 +16,15 @@ var ew_layerConverter = (function (){
         }
     }
     
+    function transformCoordinateSpace(layer, textDoc) {
+        var textPos = textDoc.ps;
+        layer.ks.a.k = [ 
+            -textPos[0] || 0,
+            -textPos[1] || 0,
+            -textPos[2] || 0
+        ]
+    }
+    
     function convertTextToImage(layer, assets) {
         var originalType = layer.ty;
         layer.ty = bm_layerElement.layerTypes.still;
@@ -29,6 +38,8 @@ var ew_layerConverter = (function (){
         var newAssetName = "img_text_" + layer.nm + ".png"
         layer.refId = newAssetName;
         assets.push(asset(newAssetName, textSize[0], textSize[1]));
+        
+        transformCoordinateSpace(layer, textDoc);
     }
     
     function removeUnsuportedLayers(animation) {
