@@ -40,7 +40,6 @@ var ew_momentsExtractor = (function () {
     }
 
     function momentFromLayer(layer, framerate, assets) {
-        ew_utils.log("Started extracting moment from layer " + layer.nm);
         var asset = ew_utils.findInArray(assets, function(asset) { 
             return asset.id == layer.refId 
         });
@@ -65,10 +64,6 @@ var ew_momentsExtractor = (function () {
     }
 
     function extractMoments(animation) {
-        ew_utils.log(animation);
-        ew_utils.log(animation.layers.filter);
-        ew_utils.log(animation.layers);
-        ew_utils.log("Test");
         var imageLayers = ew_utils.filterArray(animation.layers, function (layer) {
             return layer.ty == bm_layerElement.layerTypes.still;
         });

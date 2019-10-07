@@ -56,10 +56,33 @@ var ew_utils = (function () {
         return foundElement;
     }
     
-    function zipArrays(arrs) {
+    function shortestZipArrays(arrs) {
+        return zipArrays(arrs, true);
+    }
+
+    function longestZipArrays(arrs) {
+        return zipArrays(arrs, false);
+    }
+
+    function forEachIfArray(arrayOrValue, action) {
+        if (isArray(arrayOrValue)) {
+            forEachInArray(arrayOrValue, action);
+        } else {
+            action(arrayOrValue);
+        }
+    }
+
+    function zipArrays(arrs, minLength) {
+        var comparator;
+        if (minLength) {
+            comparator = function (lhs, rhs) { return lhs < rhs; }
+        } else {
+            comparator = function (lhs, rhs) { return lhs > rhs; }
+        }
+
         var minSize = arrs[0].length || 0;
         forEachInArray(arrs, function(arr) {
-            if (arr.length < minSize) {
+            if (comparator(arr.length, minSize)) {
                 minSize = arr.length;   
             }
         });
@@ -78,15 +101,22 @@ var ew_utils = (function () {
         return string.substring(pos, pos + search.length) === search;
     }
     
+    function isArray(array) {
+        return Object.prototype.toString.call(array) === '[object Array]';
+    }
+
     var obj = {
         showError: showError,
-        zipArrays: zipArrays,
+        shortestZipArrays: shortestZipArrays,
+        longestZipArrays: longestZipArrays,
         forEachInArray: forEachInArray,
         filterArray: filterArray,
         mapArray: mapArray,
         findInArray: findInArray,
         stringStartsWith: stringStartsWith,
-        log: log
+        log: log,
+        isArray: isArray,
+        forEachIfArray: forEachIfArray
     };
     
     return obj;

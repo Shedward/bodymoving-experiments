@@ -25,7 +25,7 @@ var ew_contentExtractor = (function() {
             return undefined;
         }
         
-        var groupedPoints  = ew_utils.zipArrays([ bmPath.v, bmPath.i, bmPath.o ]);
+        var groupedPoints  = ew_utils.shortestZipArrays([ bmPath.v, bmPath.i, bmPath.o ]);
         var points = ew_utils.mapArray(groupedPoints, function (pointData) {
             return {
                 p: pointFromArray(pointData[0]),
@@ -52,7 +52,7 @@ var ew_contentExtractor = (function() {
         
         var path;
         var maskValue = mask.pt.k;
-        if (maskValue.isArray) {
+        if (ew_utils.isArray(maskValue.isArray)) {
             path = maskValue[0].s[0];
         } else {
             path = maskValue;

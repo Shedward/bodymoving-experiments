@@ -16,13 +16,34 @@ var ew_layerConverter = (function (){
         }
     }
     
-    function transformCoordinateSpace(layer, textDoc) {
-        var textPos = textDoc.ps;
-        layer.ks.a.k = [ 
-            -textPos[0] || 0,
-            -textPos[1] || 0,
-            -textPos[2] || 0
-        ]
+    function movePointsInBezierPath(path, diff) {
+        path.v = ew_utils.mapArray(path.v, function (v) {
+            return [
+                (v[0] || 0) + (diff[0] || 0),
+                (v[1] || 0) + (diff[1] || 0)
+            ];
+        });
+    }
+
+    function moveAnchorPointInLayer(layer, newAnchorPoint) {
+        layer.ks.a.k = newAnchorPoint;
+
+        if (layer.hasMask) {
+            ew_utils.forEachIfArray(layer.masksProperties, function (mask) {
+                ew_utils.forEachIfArray(mask.pt.k, function (keyframe) {
+                    if (keyframe.s) {
+                        ew_utils.forEachIfArray(keyframe.s, function (s) {
+                            movePointsInBezierPath(s, newAnchorPoint);
+                        });
+                    }
+                    if (keyframe.e) {
+                        ew_utils.forEachIfArray(keyframe.e, function (e) {
+                            movePointsInBezierPath(e, newAnchorPoint);
+                        });
+                    }
+                });
+            });
+        }
     }
     
     function convertTextToImage(layer, assets) {
@@ -39,7 +60,13 @@ var ew_layerConverter = (function (){
         layer.refId = newAssetName;
         assets.push(asset(newAssetName, textSize[0], textSize[1]));
         
-        transformCoordinateSpace(layer, textDoc);
+        var textPos = textDoc.ps;
+        var newAnchorPoint = [
+            -textPos[0] || 0,
+            -textPos[1] || 0 - (textDoc.lh || 0),
+            -textPos[2] || 0
+        ];
+        moveAnchorPointInLayer(layer, newAnchorPoint);
     }
     
     function removeUnsuportedLayers(animation) {
