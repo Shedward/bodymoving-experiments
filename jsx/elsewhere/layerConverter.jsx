@@ -1,9 +1,14 @@
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, regexp: true, indent: 4, maxerr: 50 */
 /*exported ew_layerConverter */
-/*global bm_layerElement, ew_metadataManager, ew_utils */
+/*global bm_layerElement, ew_metadataManager, ew_utils, bm_shapeHelper */
 
 var ew_layerConverter = (function (){
     'use strict';
+    
+    var config = {
+        convertLayersToImage: true,
+        removeUnsupportedLayers: true
+    };
     
     function asset(name, width, height) {
         return {
@@ -69,6 +74,51 @@ var ew_layerConverter = (function (){
         moveAnchorPointInLayer(layer, newAnchorPoint);
     }
     
+    function sizeOfShape(shapes) {
+        var size;
+        ew_utils.forEachIfArray(shapes, function (shape) {
+            var currentSize;
+            switch (shape.ty) {
+                case bm_shapeHelper.shapeItemTypes.rect:
+                    currentSize = shape.s.k;
+                    break;
+                case bm_shapeHelper.shapeItemTypes.ellipse:
+                    currentSize = shape.s.k;
+                    break;
+                case bm_shapeHelper.shapeItemTypes.shape:
+                    currentSize = [0, 0];
+                    break;
+                case bm_shapeHelper.shapeItemTypes.group:
+                    currentSize = sizeOfShape(shape.it);
+                    break;
+            }
+            
+            if (currentSize[0] > size[0]) {
+                size[0] = currentSize[0];
+            }
+            if (currentSize[1] > size[1]) {
+                size[1] = currentSize[1];
+            }
+        });
+        return size || [100, 100];
+    }
+    
+    function convertShapeToImage(layer, assets) {
+        var originalType = layer.ty;
+        layer.ty = bm_layerElement.layerTypes.still;
+        ew_metadataManager.write(layer, ew_metadataManager.key.originalType, originalType);
+        
+        ew_utils.log(layer);
+        var size = [ 
+            layer.bounds.r - layer.bounds.l,
+            layer.bounds.b - layer.bounds.t
+        ];
+        ew_utils.log(size);
+        var newAssetName = "img_shape_" + layer.nm + ".png"
+        layer.refId = newAssetName;
+        assets.push(asset(newAssetName, size[0], size[1]));
+    }
+    
     function removeUnsuportedLayers(animation) {
         animation.layers = ew_utils.filterArray(animation.layers, function (layer) {
             return layer.ty == bm_layerElement.layerTypes.still;
@@ -78,7 +128,10 @@ var ew_layerConverter = (function (){
     function convertToImage(layer, assets) {
         switch (layer.ty) {
             case bm_layerElement.layerTypes.text:
-                convertTextToImage(layer, assets)
+                convertTextToImage(layer, assets);
+                break;
+            case bm_layerElement.layerTypes.shape:
+                convertShapeToImage(layer, assets);
                 break;
             default:
                 break;
@@ -86,11 +139,15 @@ var ew_layerConverter = (function (){
     }
     
     function convertAnimation(animation) {
-        ew_utils.forEachInArray(animation.layers, function (layer) {
-            convertToImage(layer, animation.assets);
-        });
+        if (config.convertLayersToImage) {
+            ew_utils.forEachInArray(animation.layers, function (layer) {
+                convertToImage(layer, animation.assets);
+            });
+        }
         
-        removeUnsuportedLayers(animation);
+        if (config.removeUnsupportedLayers) {
+            removeUnsuportedLayers(animation);   
+        }
     }
     
     var obj = {
